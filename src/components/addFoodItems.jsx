@@ -1,26 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { db, Auth } from "../firebase";
 import { addDoc, collection } from "firebase/firestore";
+import { storage } from "../firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
 
 const addFoodItems = () => {
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
 	const [price, setPrice] = useState(0);
-	const [image, setImage] = useState("");
+	const [image, setImage] = useState(null);
+	const [imgUrl, setImgUrl] = useState("");
 	const foodItemsCollectionRef = collection(db, "food-items");
+
+	const uploadImage = async () => {
+		if (image == null) {
+			return;
+		}
+		const imgFileName = `foodItems/${image.name + v4()}`;
+
+		const imageRef = ref(storage, imgFileName);
+		const uploadTask = uploadBytesResumable(imageRef, image);
+
+		try {
+			await uploadTask;
+			const downloadUrl = await getDownloadURL(imageRef);
+			setImgUrl(downloadUrl);
+			alert("Image Uploaded");
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	const onSubmitFoodItem = async () => {
 		try {
 			await addDoc(foodItemsCollectionRef, {
 				description: description,
 				name: name,
 				price: price,
+				imgUrl: imgUrl,
 				userId: Auth?.currentUser?.uid,
 			});
+			setName("");
+			setDescription("");
+			setPrice(0);
+			setImage(null);
+			setImgUrl("");
 		} catch (err) {
 			console.log(err);
 		}
 	};
+
 	return (
 		<div className="w-80vw h-80vh flex justify-center mt-20">
 			<div className="w-[80vw] md:w-[40vw] h-[75vh] p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -67,7 +98,7 @@ const addFoodItems = () => {
 							htmlFor="Price"
 							className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 						>
-							Price
+							Price (In Rs)
 						</label>
 						<input
 							type="text"
@@ -79,23 +110,32 @@ const addFoodItems = () => {
 							required
 						/>
 					</div>
-					<div>
+					<div className="pb-10">
 						<label
 							htmlFor="Image"
 							className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 						>
 							Image
 						</label>
-						<input
-							type="file"
-							name="image"
-							id="image"
-							onChange={(e) => {
-								setImage(e.target.files[0]);
-							}}
-							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-							required
-						/>
+						<div className="flex justify-between">
+							<input
+								type="file"
+								name="image"
+								id="image"
+								onChange={(e) => {
+									setImage(e.target.files[0]);
+								}}
+								className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[45vw] sm:w-[15vw] p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+								required
+							/>
+							<button
+								type="button"
+								onClick={uploadImage}
+								className="w-[25vw] sm:w-[15vw] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+							>
+								Upload Image
+							</button>
+						</div>
 					</div>
 					<Link to="/">
 						<button

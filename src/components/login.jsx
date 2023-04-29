@@ -10,7 +10,7 @@ const login = () => {
 	const signIn = async () => {
 		try {
 			await signInWithEmailAndPassword(Auth, email, password);
-			console.log("User Logged In");
+			alert("User Logged In Successfully");
 			navigate("/");
 		} catch (err) {
 			console.error(err);

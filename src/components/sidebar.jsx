@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Searchbar from "./searchBar";
 import { Link } from "react-router-dom";
 import { Auth } from "../firebase";
 import { signOut } from "firebase/auth";
@@ -16,7 +17,7 @@ const sidebar = () => {
 	const signout = async () => {
 		try {
 			await signOut(Auth);
-			console.log("User Signed out successfully!");
+			alert("User Logged out successfully!");
 		} catch (err) {
 			console.error(err);
 		}
@@ -51,20 +52,18 @@ const sidebar = () => {
 									></path>
 								</svg>
 							</button>
-							<Link
-								to="https://flowbite.com"
-								className="flex ml-2 md:mr-24"
-							>
+							<Link to="/" className="flex ml-2 md:mr-24">
 								<img
-									src="https://flowbite.com/docs/images/logo.svg"
+									src="https://tse2.mm.bing.net/th?id=OIP.wt_DDtj2PJnS1jFUOMOZNgHaHa&pid=Api&P=0"
 									className="h-8 mr-3"
 									alt="FlowBite Logo"
 								/>
 								<span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-									Flowbite
+									GrubGenie
 								</span>
 							</Link>
 						</div>
+						<Searchbar />
 						<div className="flex items-center">
 							<div className="flex items-center ml-3">
 								<div>
@@ -219,7 +218,7 @@ const sidebar = () => {
 						</li>
 						<li>
 							<Link
-								to="/"
+								to="/updateFoodItems"
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
 							>
 								<svg
@@ -236,7 +235,7 @@ const sidebar = () => {
 									></path>
 								</svg>
 								<span className="flex-1 ml-3 whitespace-nowrap">
-									Users
+									Update Food Items
 								</span>
 							</Link>
 						</li>
@@ -259,7 +258,10 @@ const sidebar = () => {
 									></path>
 								</svg>
 								<span className="flex-1 ml-3 whitespace-nowrap">
-									Products
+									Cart
+								</span>
+								<span class="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
+									0
 								</span>
 							</Link>
 						</li>

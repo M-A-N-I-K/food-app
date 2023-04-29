@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
-import {
-	collection,
-	deleteDoc,
-	getDocs,
-	doc,
-	updateDoc,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 const auth = () => {
 	const [foodItem, setFoodItem] = useState([]);
-	// const [foodItemDescription, setFoodItemDescription] = useState("");
 	const foodItemsCollectionRef = collection(db, "food-items");
 	const getFoodItems = async () => {
 		try {
@@ -27,27 +20,19 @@ const auth = () => {
 	useEffect(() => {
 		getFoodItems();
 	}, []);
-	// const deleteFoodItem = async (id) => {
-	// 	const foodItemDoc = doc(db, "food-items", id);
-	// 	await deleteDoc(foodItemDoc);
-	// };
 
-	// const updateMovieTitle = async (id) => {
-	// 	const foodItemDoc = doc(db, "food-items", id);
-	// 	await updateDoc(movieDoc, { title: updatedTitle });
-	// };
 	return (
-		<div>
+		<div className="grid grid-cols-1 place-items-center mr-0 md:mr-20 mb-10 md:place-items-end md:grid-cols-2">
 			{foodItem.map((item) => (
-				<div className="h-[40vh] flex justify-center mt-20">
-					<div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-						<a href="#">
+				<div key={item.id} className="h-[50vh] flex justify-center mt-20">
+					<div className="w-full max-w-lg bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+						<div className="w-10vw">
 							<img
-								className="p-8 rounded-t-lg"
-								src="/docs/images/products/apple-watch.png"
+								className="p-8 object-contain h-48 w-96 rounded-t-lg"
+								src={item.imgUrl}
 								alt="product image"
 							/>
-						</a>
+						</div>
 						<div className="px-5 pb-5">
 							<a href="#">
 								<h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">

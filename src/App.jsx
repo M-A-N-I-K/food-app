@@ -7,6 +7,7 @@ const Login = lazy(() => import("./components/login"));
 const Sidebar = lazy(() => import("./components/sidebar"));
 const Home = lazy(() => import("./components/home"));
 const AddFoodItems = lazy(() => import("./components/addFoodItems"));
+const UpdateFoodItems = lazy(() => import("./components/updateFoodItems"));
 
 function App() {
 	return (
@@ -30,6 +31,11 @@ function App() {
 			<Suspense fallback={<div className="text-center">Loading...</div>}>
 				<Routes>
 					<Route path="/addFoodItems" element={<AddFoodItems />} />
+				</Routes>
+			</Suspense>
+			<Suspense fallback={<div className="text-center">Loading...</div>}>
+				<Routes>
+					<Route path="/updateFoodItems" element={<UpdateFoodItems />} />
 				</Routes>
 			</Suspense>
 		</BrowserRouter>
