@@ -8,7 +8,9 @@ const searchBar = () => {
 		e.preventDefault();
 		if (searchKeyword !== "") {
 			const filteredFoodItem = foodItemsList.foodItem.filter((item) => {
-				return Object.filter(item.name)
+				return Object.keys(item)
+					.filter((key) => key === "name")
+					.map((key) => item[key])
 					.join("")
 					.toLowerCase()
 					.includes(searchKeyword.toLowerCase());

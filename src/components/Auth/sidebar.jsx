@@ -69,10 +69,10 @@ const sidebar = () => {
 							<Link to="/" className="flex ml-2 md:mr-24">
 								<img
 									src="https://tse2.mm.bing.net/th?id=OIP.wt_DDtj2PJnS1jFUOMOZNgHaHa&pid=Api&P=0"
-									className="h-8 mr-3"
-									alt="FlowBite Logo"
+									className="h-8 mr-1 sm:mr-3"
+									alt="GrubGenie Logo"
 								/>
-								<span className="self-center text-md font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+								<span className="self-center text-sm font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
 									GrubGenie
 								</span>
 							</Link>
@@ -188,7 +188,7 @@ const sidebar = () => {
 
 			<aside
 				id="logo-sidebar"
-				className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full ${
+				className={`fixed top-10 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full ${
 					showSideBar ? "translate-x-0" : ""
 				} bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
 				aria-label="Sidebar"
