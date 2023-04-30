@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import SideBarContext from "../context/sideBarContext";
+import SideBarContext from "../../context/sideBarContext";
 
 const auth = () => {
 	const foodItemsList = useContext(SideBarContext);

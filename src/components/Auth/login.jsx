@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Auth } from "../firebase";
+import { Auth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import SideBarContext from "../context/sideBarContext";
+import SideBarContext from "../../context/sideBarContext";
 
 const login = () => {
 	const [email, setEmail] = useState("");

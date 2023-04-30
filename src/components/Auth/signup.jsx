@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Auth, db } from "../firebase";
+import { Auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
-import AdminContext from "../context/context";
+import SideBarContext from "../../context/sideBarContext";
 
 const signin = () => {
 	const [name, setName] = useState("");
@@ -13,7 +13,7 @@ const signin = () => {
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
-	const setLoginStatus = useContext(AdminContext);
+	const adminStatus = useContext(SideBarContext);
 
 	const registerWithEmailAndPassword = async () => {
 		if (password !== confirmPassword) {
@@ -35,8 +35,9 @@ const signin = () => {
 				name,
 				authProvider: "local",
 				email,
+				isAdmin: adminStatus.isAdmin,
 			});
-			console.log("Added user in database");
+			adminStatus.setisUserLoggedIn(true);
 			alert("Account Created Successfully!");
 			navigate("/signin");
 		} catch (err) {
@@ -44,6 +45,10 @@ const signin = () => {
 			alert(err.message);
 		}
 		setLoading(false);
+	};
+
+	const setAdminStatus = () => {
+		adminStatus.setIsAdmin(!adminStatus.isAdmin);
 	};
 
 	return (
@@ -144,14 +149,34 @@ const signin = () => {
 							required
 						/>
 					</div>
-					<button
-						type="button"
-						disabled={loading}
-						onClick={registerWithEmailAndPassword}
-						className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-					>
-						Sign up
-					</button>
+					<div className="flex items-start">
+						<div className="flex items-center h-5">
+							<input
+								id="remember"
+								type="checkbox"
+								value="checkbox"
+								onChange={setAdminStatus}
+								className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+								required
+							/>
+						</div>
+						<label
+							htmlFor="remember"
+							className="ml-2 text-sm mb-4 font-medium text-gray-900 dark:text-gray-300"
+						>
+							Sign Up As Admin
+						</label>
+					</div>
+					<Link to="/">
+						<button
+							type="button"
+							disabled={loading}
+							onClick={registerWithEmailAndPassword}
+							className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						>
+							Sign up
+						</button>
+					</Link>
 					<div className="text-lg font-medium text-center text-gray-500 dark:text-gray-300">
 						Already have an account?{" "}
 						<Link

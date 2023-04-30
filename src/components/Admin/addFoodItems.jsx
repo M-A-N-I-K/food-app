@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { db, Auth } from "../firebase";
+import { db, Auth } from "../../firebase";
 import { addDoc, collection } from "firebase/firestore";
-import { storage } from "../firebase";
+import { storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
 
