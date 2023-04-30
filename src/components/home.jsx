@@ -1,29 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useContext } from "react";
+import SideBarContext from "../context/sideBarContext";
 
 const auth = () => {
-	const [foodItem, setFoodItem] = useState([]);
-	const foodItemsCollectionRef = collection(db, "food-items");
-	const getFoodItems = async () => {
-		try {
-			const data = await getDocs(foodItemsCollectionRef);
-			const filteredData = data.docs.map((doc) => ({
-				...doc.data(),
-				id: doc.id,
-			}));
-			setFoodItem(filteredData);
-		} catch (err) {
-			console.log(err);
-		}
-	};
+	const foodItemsList = useContext(SideBarContext);
+
 	useEffect(() => {
-		getFoodItems();
+		foodItemsList.getFoodItems();
 	}, []);
 
 	return (
 		<div className="grid grid-cols-1 place-items-center mr-0 md:mr-20 mb-10 md:place-items-end md:grid-cols-2">
-			{foodItem.map((item) => (
+			{foodItemsList.foodItem.map((item) => (
 				<div key={item.id} className="h-[50vh] flex justify-center mt-20">
 					<div className="w-full max-w-lg bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 						<div className="w-10vw">

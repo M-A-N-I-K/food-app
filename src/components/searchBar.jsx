@@ -1,9 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import foodItemContext from "../context/sideBarContext";
+
 const searchBar = () => {
 	const [searchKeyword, setSearchKeyword] = useState("");
-
+	const foodItemsList = useContext(foodItemContext);
 	const searchItems = (e) => {
 		e.preventDefault();
+		if (searchKeyword !== "") {
+			const filteredFoodItem = foodItemsList.foodItem.filter((item) => {
+				console.log(item);
+				console.log(item.name);
+				return Object.values(item.name)
+					.join("")
+					.toLowerCase()
+					.includes(searchKeyword.toLowerCase());
+			});
+			foodItemsList.setFoodItem(filteredFoodItem);
+		} else {
+			foodItemsList.getFoodItems();
+		}
 	};
 	return (
 		<div className="w-[35vw] sm:w-[60vw]">
@@ -38,6 +53,7 @@ const searchBar = () => {
 				</div>
 				<button
 					type="button"
+					onClick={(e) => searchItems(e)}
 					className="p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 				>
 					<svg
