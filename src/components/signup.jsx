@@ -1,35 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Auth } from "../firebase";
+import { Auth, db } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
+import AdminContext from "../context/context";
 
 const signin = () => {
+	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
-	const signUp = async () => {
+	const setLoginStatus = useContext(AdminContext);
+
+	const registerWithEmailAndPassword = async () => {
 		if (password !== confirmPassword) {
 			return setError("Password do not match");
 		}
 		try {
 			setError("");
 			setLoading(true);
-			await createUserWithEmailAndPassword(Auth, email, password);
+			const res = await createUserWithEmailAndPassword(
+				Auth,
+				email,
+				password
+			);
+			console.log(res);
+			const user = res.user;
+			console.log(user);
+			await addDoc(collection(db, "users"), {
+				uid: user.uid,
+				name,
+				authProvider: "local",
+				email,
+			});
+			console.log("Added user in database");
+			alert("Account Created Successfully!");
 			navigate("/signin");
 		} catch (err) {
-			setError("Failed to create an account!");
+			console.error(err);
+			alert(err.message);
 		}
 		setLoading(false);
 	};
 
-	console.log(email);
-	console.log(password);
 	return (
 		<div className="w-80vw h-80vh flex justify-center mt-20">
-			<div className="w-[80vw] md:w-[40vw] h-[70vh] p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+			<div className="w-[80vw] md:w-[40vw] h-[80vh] p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
 				<form className="space-y-6" action="#">
 					<h5 className="text-xl font-medium text-center text-gray-900 dark:text-white">
 						Sign up
@@ -57,6 +76,23 @@ const signin = () => {
 							<div className="ml-3 text-sm font-medium">{error}</div>
 						</div>
 					)}
+					<div>
+						<label
+							htmlFor="email"
+							className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+						>
+							Name
+						</label>
+						<input
+							type="name"
+							name="name"
+							id="name"
+							onChange={(e) => setName(e.target.value)}
+							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+							placeholder="John Wick"
+							required
+						/>
+					</div>
 					<div>
 						<label
 							htmlFor="email"
@@ -109,8 +145,9 @@ const signin = () => {
 						/>
 					</div>
 					<button
+						type="button"
 						disabled={loading}
-						onClick={signUp}
+						onClick={registerWithEmailAndPassword}
 						className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 					>
 						Sign up

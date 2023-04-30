@@ -1,20 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import SideBarContext from "../context/sideBarContext";
 
 const login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const navigate = useNavigate();
-	const signIn = async () => {
+	const userStatus = useContext(SideBarContext);
+
+	const logInWithEmailAndPassword = async () => {
 		try {
 			await signInWithEmailAndPassword(Auth, email, password);
-			alert("User Logged In Successfully");
+			userStatus.setisUserLoggedIn(true);
 			navigate("/");
 		} catch (err) {
 			console.error(err);
-			alert("User Not Found!");
+			alert(err.message);
 		}
 	};
 
@@ -60,21 +63,22 @@ const login = () => {
 						/>
 					</div>
 					<div className="flex items-start">
-						<a
-							href="#"
+						<Link
+							to="/forget-password"
 							className="text-md text-center text-blue-700 hover:underline dark:text-blue-500"
 						>
 							Forgot Password?
-						</a>
+						</Link>
 					</div>
 					<button
-						onClick={signIn}
-						type="submit"
-						className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						onClick={logInWithEmailAndPassword}
+						type="button"
+						className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 mb-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 					>
-						Login
+						Sign In
 					</button>
-					<div className="text-sm font-medium text-gray-500 dark:text-gray-300">
+
+					<div className="text-lg text-center font-medium text-gray-500 dark:text-gray-300">
 						Not registered?{" "}
 						<Link
 							to="/signup"
