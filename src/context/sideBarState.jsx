@@ -5,10 +5,10 @@ import { Auth, db } from "../firebase";
 import {
 	collection,
 	getDocs,
-	getDoc,
-	doc,
 	query,
 	where,
+	doc,
+	setDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -18,8 +18,8 @@ const sideBarState = (props) => {
 	const [foodItem, setFoodItem] = useState([]);
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [userData, setUserData] = useState([]);
+	const [productsId, setProductsId] = useState([]);
 	const foodItemsCollectionRef = collection(db, "food-items");
-
 	const history = createBrowserHistory();
 
 	const getFoodItems = async () => {
@@ -51,6 +51,42 @@ const sideBarState = (props) => {
 			}
 		});
 	};
+	const addToCart = async (product) => {
+		onAuthStateChanged(Auth, async (user) => {
+			if (user) {
+				const userId = user.uid;
+				const userDocRef = collection(db, "cart");
+				const docRef = doc(userDocRef, userId);
+				const q = query(userDocRef, where("uid", "==", userId));
+				const querySnapshot = await getDocs(q);
+				querySnapshot.forEach(async (doc) => {
+					try {
+						const items = doc.data().products;
+						await setDoc(
+							docRef,
+							{
+								...doc.data(),
+								products: [
+									...items,
+									{
+										product,
+									},
+								],
+							},
+							{ merge: true }
+						);
+
+						alert("Item added to cart!");
+					} catch (error) {
+						console.error("Item Not Added To Cart: ", error);
+					}
+					setUserData(user);
+				});
+			} else {
+				console.log("Failed To add item");
+			}
+		});
+	};
 
 	useEffect(() => {
 		localStorage.setItem("isUserLoggedIn", isUserLoggedIn);
@@ -69,6 +105,9 @@ const sideBarState = (props) => {
 				isAdmin,
 				setIsAdmin,
 				userData,
+				productsId,
+				setProductsId,
+				addToCart,
 			}}
 		>
 			{props.children}

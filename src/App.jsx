@@ -10,9 +10,6 @@ const Sidebar = lazy(() => import("./components/Auth/sidebar"));
 const Home = lazy(() => import("./components/User/home"));
 const Cart = lazy(() => import("./components/User/cart"));
 const AddFoodItems = lazy(() => import("./components/Admin/addFoodItems"));
-const UpdateFoodItems = lazy(() =>
-	import("./components/Admin/updateFoodItems")
-);
 const ForgetPassword = lazy(() => import("./components/Auth/forgetPassword"));
 const Dashboard = lazy(() => import("./components/Admin/dashboard"));
 
@@ -32,14 +29,6 @@ function App() {
 							element={
 								<PrivateRoute>
 									<AddFoodItems />
-								</PrivateRoute>
-							}
-						/>
-						<Route
-							path="/updateFoodItems"
-							element={
-								<PrivateRoute>
-									<UpdateFoodItems />
 								</PrivateRoute>
 							}
 						/>

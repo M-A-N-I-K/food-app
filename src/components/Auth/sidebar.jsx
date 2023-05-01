@@ -49,7 +49,7 @@ const sidebar = () => {
 								data-drawer-toggle="logo-sidebar"
 								aria-controls="logo-sidebar"
 								type="button"
-								className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+								className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg  hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
 							>
 								<span className="sr-only">Open sidebar</span>
 								<svg
@@ -145,7 +145,7 @@ const sidebar = () => {
 															>
 																Cart
 															</span>
-															<span className="inline-flex mt-1 items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
+															<span className="inline-flex mt-2 mr-4 items-center justify-center w-4 h-4 p-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
 																0
 															</span>
 														</div>
@@ -176,7 +176,7 @@ const sidebar = () => {
 							) : (
 								<Link
 									to="signin"
-									className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 mb-1 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+									className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs md:text-sm px-4 md:px-5 mb-1 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 								>
 									Sign In/Sign Up
 								</Link>
@@ -190,7 +190,7 @@ const sidebar = () => {
 				id="logo-sidebar"
 				className={`fixed top-10 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full ${
 					showSideBar ? "translate-x-0" : ""
-				} bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
+				} bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700`}
 				aria-label="Sidebar"
 			>
 				<div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
@@ -236,7 +236,7 @@ const sidebar = () => {
 									<span className="flex-1 ml-3 whitespace-nowrap">
 										Cart
 									</span>
-									<span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
+									<span className="inline-flex items-center justify-center w-3 h-3 p-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
 										0
 									</span>
 								</Link>
@@ -286,29 +286,6 @@ const sidebar = () => {
 												</svg>
 												<span className="flex-1 ml-3 whitespace-nowrap">
 													Add Food Items
-												</span>
-											</Link>
-										</li>
-										<li>
-											<Link
-												to="/updateFoodItems"
-												className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-											>
-												<svg
-													aria-hidden="true"
-													className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-													fill="currentColor"
-													viewBox="0 0 20 20"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														fillRule="evenodd"
-														d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-														clipRule="evenodd"
-													></path>
-												</svg>
-												<span className="flex-1 ml-3 whitespace-nowrap">
-													Update Food Items
 												</span>
 											</Link>
 										</li>
