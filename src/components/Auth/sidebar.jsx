@@ -119,7 +119,7 @@ const sidebar = () => {
 										</div>
 										<ul className="py-1" role="none">
 											{userStatus.userData.isAdmin && (
-												<li>
+												<li onClick={toggleMenu}>
 													<Link to="/dashboard">
 														<div className="flex justify-between hover:bg-gray-100 dark:hover:bg-gray-600">
 															<span
@@ -136,7 +136,7 @@ const sidebar = () => {
 												</li>
 											)}
 											{!userStatus.userData.isAdmin && (
-												<li>
+												<li onClick={toggleMenu}>
 													<Link to="/cart">
 														<div className="flex justify-between hover:bg-gray-100 dark:hover:bg-gray-600">
 															<span
@@ -152,7 +152,7 @@ const sidebar = () => {
 													</Link>
 												</li>
 											)}
-											<li>
+											<li onClick={toggleMenu}>
 												<Link
 													to="/"
 													className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -195,7 +195,7 @@ const sidebar = () => {
 			>
 				<div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
 					<ul className="space-y-2 font-medium">
-						<li>
+						<li onClick={toggleSidebar}>
 							<Link
 								to="/"
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -215,7 +215,7 @@ const sidebar = () => {
 							</Link>
 						</li>
 						{!userStatus.userData.isAdmin && (
-							<li>
+							<li onClick={toggleSidebar}>
 								<Link
 									to="/cart"
 									className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -246,7 +246,7 @@ const sidebar = () => {
 							<>
 								{userStatus.userData.isAdmin && (
 									<>
-										<li>
+										<li onClick={toggleSidebar}>
 											<Link
 												to="/dashboard"
 												className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -269,7 +269,7 @@ const sidebar = () => {
 												</span>
 											</Link>
 										</li>
-										<li>
+										<li onClick={toggleSidebar}>
 											<Link
 												to="/addFoodItems"
 												className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -295,7 +295,7 @@ const sidebar = () => {
 						)}{" "}
 						{!userStatus.isUserLoggedIn && (
 							<>
-								<li>
+								<li onClick={toggleSidebar}>
 									<Link
 										to="/signin"
 										className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -318,7 +318,7 @@ const sidebar = () => {
 										</span>
 									</Link>
 								</li>
-								<li>
+								<li onClick={toggleSidebar}>
 									<Link
 										to="/signup"
 										className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"

@@ -1,16 +1,26 @@
 import { useState, useEffect } from "react";
 import SidebarContext from "./sideBarContext";
 import { createBrowserHistory } from "history";
-import { Auth, db } from "../firebase";
+import { Auth, db, realtimeDb } from "../firebase";
 import {
 	collection,
 	getDocs,
 	query,
 	where,
 	doc,
+	getDoc,
 	setDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import {
+	onValue,
+	ref,
+	orderByChild,
+	set,
+	push,
+	child,
+} from "firebase/database";
+import { useDatabaseListData } from "reactfire";
 
 const sideBarState = (props) => {
 	const value = localStorage.getItem("isUserLoggedIn");
@@ -18,7 +28,8 @@ const sideBarState = (props) => {
 	const [foodItem, setFoodItem] = useState([]);
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [userData, setUserData] = useState([]);
-	const [productsId, setProductsId] = useState([]);
+	const [isLoading, setisLoading] = useState([]);
+	const [cartItems, setCartItems] = useState([]);
 	const foodItemsCollectionRef = collection(db, "food-items");
 	const history = createBrowserHistory();
 
@@ -51,39 +62,57 @@ const sideBarState = (props) => {
 			}
 		});
 	};
+
+	const updateInCart = () => {};
+
 	const addToCart = async (product) => {
 		onAuthStateChanged(Auth, async (user) => {
 			if (user) {
-				const userId = user.uid;
-				const userDocRef = collection(db, "cart");
-				const docRef = doc(userDocRef, userId);
-				const q = query(userDocRef, where("uid", "==", userId));
-				const querySnapshot = await getDocs(q);
-				querySnapshot.forEach(async (doc) => {
-					try {
-						const items = doc.data().products;
-						await setDoc(
-							docRef,
-							{
-								...doc.data(),
-								products: [
-									...items,
-									{
-										product,
-									},
-								],
-							},
-							{ merge: true }
-						);
+				const item = {
+					name: product.name,
+					description: product.description,
+					price: product.price,
+					imgUrl: product.imgUrl,
+					qty: 1,
+					itemId: product.userId,
+				};
+				const pushReference = ref(
+					realtimeDb,
+					`food-app-static/cart${user.uid}`
+				);
+				push(pushReference, item);
+				alert("Item added to cart");
+			} else {
+				console.log("User is not signed in");
+			}
+		});
+	};
 
-						alert("Item added to cart!");
-					} catch (error) {
-						console.error("Item Not Added To Cart: ", error);
-					}
-					setUserData(user);
+	const displayCart = async () => {
+		onAuthStateChanged(Auth, async (user) => {
+			if (user) {
+				const reference = ref(
+					realtimeDb,
+					`food-app-static/cart${user.uid}`
+				);
+				onValue(reference, (snapshot) => {
+					snapshot.forEach((childSnapshot) => {
+						const updateCartItems = [
+							...cartItems,
+							{
+								name: childSnapshot.val().name,
+								description: childSnapshot.val().description,
+								price: childSnapshot.val().price,
+								imgUrl: childSnapshot.val().imgUrl,
+								qty: childSnapshot.val().qty,
+								itemId: childSnapshot.val().itemId,
+							},
+						];
+						setCartItems(updateCartItems);
+					});
 				});
 			} else {
-				console.log("Failed To add item");
+				console.log("User is not signed in");
 			}
 		});
 	};
@@ -92,7 +121,10 @@ const sideBarState = (props) => {
 		localStorage.setItem("isUserLoggedIn", isUserLoggedIn);
 		history.push(`?isUserLoggedIn=${isUserLoggedIn}`);
 		getUserData();
+		displayCart();
 	}, [isUserLoggedIn]);
+
+	const removeFromCart = async (product) => {};
 
 	return (
 		<SidebarContext.Provider
@@ -105,9 +137,11 @@ const sideBarState = (props) => {
 				isAdmin,
 				setIsAdmin,
 				userData,
-				productsId,
-				setProductsId,
+				isLoading,
+				setisLoading,
 				addToCart,
+				cartItems,
+				isLoading,
 			}}
 		>
 			{props.children}

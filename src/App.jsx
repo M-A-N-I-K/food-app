@@ -3,6 +3,8 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/privateRoute";
 import SidebarState from "./context/sideBarState";
+import { DatabaseProvider ,FirebaseAppProvider} from "reactfire";
+import { realtimeDb, firebaseConfig } from "./firebase";
 
 const Signup = lazy(() => import("./components/Auth/signup"));
 const Login = lazy(() => import("./components/Auth/login"));
@@ -15,44 +17,53 @@ const Dashboard = lazy(() => import("./components/Admin/dashboard"));
 
 function App() {
 	return (
-		<SidebarState>
-			<Suspense fallback={<div className="text-center">Loading...</div>}>
-				<BrowserRouter>
-					<Sidebar />
-					<Routes>
-						<Route exact path="/" element={<Home />} />
-						<Route path="/signin" element={<Login />} />
+		<FirebaseAppProvider firebaseConfig={firebaseConfig}>
+			<DatabaseProvider sdk={realtimeDb}>
+				<SidebarState>
+					<Suspense
+						fallback={<div className="text-center">Loading...</div>}
+					>
+						<BrowserRouter>
+							<Sidebar />
+							<Routes>
+								<Route exact path="/" element={<Home />} />
+								<Route path="/signin" element={<Login />} />
 
-						<Route path="/signup" element={<Signup />} />
-						<Route
-							path="/addFoodItems"
-							element={
-								<PrivateRoute>
-									<AddFoodItems />
-								</PrivateRoute>
-							}
-						/>
-						<Route path="/forget-password" element={<ForgetPassword />} />
-						<Route
-							path="/dashboard"
-							element={
-								<PrivateRoute>
-									<Dashboard />
-								</PrivateRoute>
-							}
-						/>
-						<Route
-							path="/cart"
-							element={
-								<PrivateRoute>
-									<Cart />
-								</PrivateRoute>
-							}
-						/>
-					</Routes>
-				</BrowserRouter>
-			</Suspense>
-		</SidebarState>
+								<Route path="/signup" element={<Signup />} />
+								<Route
+									path="/addFoodItems"
+									element={
+										<PrivateRoute>
+											<AddFoodItems />
+										</PrivateRoute>
+									}
+								/>
+								<Route
+									path="/forget-password"
+									element={<ForgetPassword />}
+								/>
+								<Route
+									path="/dashboard"
+									element={
+										<PrivateRoute>
+											<Dashboard />
+										</PrivateRoute>
+									}
+								/>
+								<Route
+									path="/cart"
+									element={
+										<PrivateRoute>
+											<Cart />
+										</PrivateRoute>
+									}
+								/>
+							</Routes>
+						</BrowserRouter>
+					</Suspense>
+				</SidebarState>
+			</DatabaseProvider>
+		</FirebaseAppProvider>
 	);
 }
 
