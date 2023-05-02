@@ -18,9 +18,9 @@ import {
 	orderByChild,
 	set,
 	push,
+	update,
 	child,
 } from "firebase/database";
-import { useDatabaseListData } from "reactfire";
 
 const sideBarState = (props) => {
 	const value = localStorage.getItem("isUserLoggedIn");
@@ -28,7 +28,7 @@ const sideBarState = (props) => {
 	const [foodItem, setFoodItem] = useState([]);
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [userData, setUserData] = useState([]);
-	const [isLoading, setisLoading] = useState([]);
+	const [isUpdated, setIsUpdated] = useState(false);
 	const [cartItems, setCartItems] = useState([]);
 	const foodItemsCollectionRef = collection(db, "food-items");
 	const history = createBrowserHistory();
@@ -63,8 +63,6 @@ const sideBarState = (props) => {
 		});
 	};
 
-	const updateInCart = () => {};
-
 	const addToCart = async (product) => {
 		onAuthStateChanged(Auth, async (user) => {
 			if (user) {
@@ -95,28 +93,40 @@ const sideBarState = (props) => {
 					realtimeDb,
 					`food-app-static/cart${user.uid}`
 				);
+				const newItems = [];
 				onValue(reference, (snapshot) => {
 					snapshot.forEach((childSnapshot) => {
-						const updateCartItems = [
-							...cartItems,
-							{
-								name: childSnapshot.val().name,
-								description: childSnapshot.val().description,
-								price: childSnapshot.val().price,
-								imgUrl: childSnapshot.val().imgUrl,
-								qty: childSnapshot.val().qty,
-								itemId: childSnapshot.val().itemId,
-							},
-						];
-						setCartItems(updateCartItems);
+						const newItem = {
+							name: childSnapshot.val().name,
+							description: childSnapshot.val().description,
+							price: childSnapshot.val().price,
+							imgUrl: childSnapshot.val().imgUrl,
+							qty: childSnapshot.val().qty,
+							itemId: childSnapshot.val().itemId,
+						};
+						newItems.push(newItem);
 					});
 				});
+				setCartItems(newItems);
 			} else {
 				console.log("User is not signed in");
 			}
 		});
 	};
 
+	const updateInCart = (itemId, newQty) => {
+		onAuthStateChanged(Auth, async (user) => {
+			if (user) {
+				const reference = ref(
+					realtimeDb,
+					`food-app-static/cart${user.uid}`
+				);
+			} else {
+				console.log("User is not signed in");
+			}
+		});
+	};
+	useEffect(() => {}, [cartItems]);
 	useEffect(() => {
 		localStorage.setItem("isUserLoggedIn", isUserLoggedIn);
 		history.push(`?isUserLoggedIn=${isUserLoggedIn}`);
@@ -137,11 +147,12 @@ const sideBarState = (props) => {
 				isAdmin,
 				setIsAdmin,
 				userData,
-				isLoading,
-				setisLoading,
+				isUpdated,
+				setIsUpdated,
 				addToCart,
 				cartItems,
-				isLoading,
+				updateInCart,
+				setCartItems,
 			}}
 		>
 			{props.children}

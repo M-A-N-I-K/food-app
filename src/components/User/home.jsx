@@ -17,9 +17,9 @@ const auth = () => {
 			{foodItemsList.foodItem.map((item) => (
 				<div
 					key={item.id}
-					className="h-[50vh] w-[90vw] md:w-[50vw] flex justify-center mt-20"
+					className="h-[50vh] w-[90vw] lg:w-[50vw] flex justify-center mt-20"
 				>
-					<div className="w-full max-w-2xl md:max-w-lg bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+					<div className="w-full max-w-2xl lg:max-w-md xl:max-w-lg bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 						<div className="w-10vw">
 							<img
 								className="p-8 object-contain h-48 w-96 rounded-t-lg"

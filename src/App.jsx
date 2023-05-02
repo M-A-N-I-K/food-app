@@ -3,8 +3,9 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/privateRoute";
 import SidebarState from "./context/sideBarState";
-import { DatabaseProvider ,FirebaseAppProvider} from "reactfire";
+import { DatabaseProvider, FirebaseAppProvider } from "reactfire";
 import { realtimeDb, firebaseConfig } from "./firebase";
+import Spinner from "./components/spinner";
 
 const Signup = lazy(() => import("./components/Auth/signup"));
 const Login = lazy(() => import("./components/Auth/login"));
@@ -20,9 +21,7 @@ function App() {
 		<FirebaseAppProvider firebaseConfig={firebaseConfig}>
 			<DatabaseProvider sdk={realtimeDb}>
 				<SidebarState>
-					<Suspense
-						fallback={<div className="text-center">Loading...</div>}
-					>
+					<Suspense fallback={<Spinner />}>
 						<BrowserRouter>
 							<Sidebar />
 							<Routes>
