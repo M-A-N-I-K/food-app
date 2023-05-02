@@ -12,15 +12,7 @@ import {
 	setDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import {
-	onValue,
-	ref,
-	orderByChild,
-	set,
-	push,
-	update,
-	child,
-} from "firebase/database";
+import { onValue, ref, set, push, remove } from "firebase/database";
 
 const sideBarState = (props) => {
 	const value = localStorage.getItem("isUserLoggedIn");
@@ -32,10 +24,15 @@ const sideBarState = (props) => {
 	const [userData, setUserData] = useState([]);
 	const [isUpdated, setIsUpdated] = useState(false);
 	const [cartItems, setCartItems] = useState([]);
+	const [orders, setOrders] = useState({});
 	const [totalItems, setTotalItems] = useState(itemsVal);
 	const [totalPrice, setTotalPrice] = useState(priceVal);
+	const [userOrderData, setUserOrderData] = useState([]);
+	const [orderId, setOrderId] = useState([]);
 	const foodItemsCollectionRef = collection(db, "food-items");
 	const history = createBrowserHistory();
+	const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+	const [isNewItemAdded, setIsNewItemAdded] = useState(false);
 
 	const getFoodItems = async () => {
 		try {
@@ -67,6 +64,23 @@ const sideBarState = (props) => {
 		});
 	};
 
+	const sendUserData = async () => {
+		onAuthStateChanged(Auth, async (user) => {
+			if (user) {
+				const userId = user.uid;
+				const userDocRef = collection(db, "users");
+				const q = query(userDocRef, where("uid", "==", userId));
+				const querySnapshot = await getDocs(q);
+				querySnapshot.forEach((doc) => {
+					const user = doc.data();
+					setUserData(user);
+				});
+			} else {
+				console.log("User is not signed in");
+			}
+		});
+	};
+
 	const addToCart = async (product) => {
 		onAuthStateChanged(Auth, async (user) => {
 			if (user) {
@@ -78,14 +92,44 @@ const sideBarState = (props) => {
 					qty: 1,
 					itemId: product.userId,
 				};
+
 				const pushReference = ref(
 					realtimeDb,
 					`food-app-static/cart${user.uid}`
 				);
 				setTotalItems(totalItems + 1);
 				setTotalPrice(totalPrice + product.price);
+				localStorage.setItem(
+					"totalPrice",
+					JSON.stringify(totalPrice + product.price)
+				);
+				localStorage.setItem("totalItems", JSON.stringify(totalItems + 1));
 				push(pushReference, item);
 				alert("Item added to cart");
+			} else {
+				console.log("User is not signed in");
+			}
+		});
+	};
+
+	const removeCartItems = async (cart) => {
+		onAuthStateChanged(Auth, async (user) => {
+			if (user) {
+				const reference = ref(
+					realtimeDb,
+					`food-app-static/cart${user.uid}`
+				);
+
+				const pushReference = ref(
+					realtimeDb,
+					`food-app-static/orders/order${user.uid}`
+				);
+				set(pushReference, cart);
+				setIsOrderPlaced(true);
+
+				remove(reference).then(() => {
+					alert("Order Placed Successfully!");
+				});
 			} else {
 				console.log("User is not signed in");
 			}
@@ -113,8 +157,7 @@ const sideBarState = (props) => {
 						newItems.push(newItem);
 					});
 				});
-				[...new Set(newItems)];
-				setCartItems(...cartItems, newItems);
+				setCartItems(newItems);
 			} else {
 				console.log("User is not signed in");
 			}
@@ -134,31 +177,26 @@ const sideBarState = (props) => {
 		});
 	};
 
-	const placeOrder = (cart) => {
+	const displayOrder = async () => {
 		onAuthStateChanged(Auth, async (user) => {
 			if (user) {
-				const pushReference = ref(
-					realtimeDb,
-					`food-app-static/orders${user.uid}`
-				);
-				set(pushReference, cart);
-				alert("Order Placed Successfully!");
+				const reference = ref(realtimeDb, `food-app-static/orders`);
+				onValue(reference, (snapshot) => {
+					setOrders(snapshot.val());
+				});
+				setOrderId(Object.keys(orders));
 			} else {
 				console.log("User is not signed in");
 			}
 		});
 	};
 
-	useEffect(() => {}, [cartItems]);
-	useEffect(() => {
-		localStorage.setItem("totalPrice", totalPrice);
-		localStorage.setItem("totalItems", totalItems);
-	}, [totalPrice]);
 	useEffect(() => {
 		localStorage.setItem("isUserLoggedIn", isUserLoggedIn);
 		history.push(`?isUserLoggedIn=${isUserLoggedIn}`);
 		getUserData();
 		displayCart();
+		displayOrder();
 	}, [isUserLoggedIn]);
 
 	const removeFromCart = async (product) => {};
@@ -180,11 +218,18 @@ const sideBarState = (props) => {
 				cartItems,
 				setCartItems,
 				updateInCart,
-				placeOrder,
 				totalItems,
 				totalPrice,
 				setTotalItems,
 				setTotalPrice,
+				orders,
+				setOrderId,
+				orderId,
+				isOrderPlaced,
+				setIsOrderPlaced,
+				isNewItemAdded,
+				setIsNewItemAdded,
+				removeCartItems,
 			}}
 		>
 			{props.children}

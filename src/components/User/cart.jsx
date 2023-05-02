@@ -4,16 +4,29 @@ import SideBarContext from "../../context/sideBarContext";
 const cart = () => {
 	const navigate = useNavigate();
 	const userCartContext = useContext(SideBarContext);
-	let price = 0;
-	let items = 0;
-
+	const items = JSON.parse(localStorage.getItem("totalItems"));
+	const price = JSON.parse(localStorage.getItem("totalPrice"));
 	useEffect(() => {
 		userCartContext.setTotalItems(items);
 		userCartContext.setTotalPrice(price);
-	}, [price]);
-	useEffect(() => {
-		userCartContext.setCartItems(userCartContext.cartItems);
-	}, [userCartContext.cartItems]);
+	}, [items]);
+	localStorage.setItem(
+		"cartProducts",
+		JSON.stringify(userCartContext.cartItems)
+	);
+
+	console.log(userCartContext.cartItems);
+
+	const orderItems = () => {
+		userCartContext.removeCartItems(userCartContext.cartItems);
+		localStorage.setItem("totalItems", 0);
+		localStorage.setItem("totalPrice", 0);
+		navigate("/");
+		// userCartContext.sendUserInfo()
+	};
+
+	const cartProducts = JSON.parse(localStorage.getItem("cartProducts"));
+	console.log(cartProducts);
 	return (
 		<>
 			<div className="w-[90vw] mx-auto mt-20">
@@ -22,73 +35,73 @@ const cart = () => {
 						<div className="flex justify-between border-b pb-8">
 							<h1 className="font-semibold text-2xl">Shopping Cart</h1>
 						</div>
-						{userCartContext.cartItems.map((product, key) => {
-							{
-								price = price + product.price;
-								items = items + 1;
-								return (
-									<div key={key}>
-										<div className="flex items-center justify-evenly hover:bg-gray-100 -mx-8 px-6 py-5">
-											<div className="flex w-2/5">
-												<div className="w-20">
-													<img
-														className="h-24"
-														src={product.imgUrl}
-														alt={product.name}
-													/>
+						{userCartContext.isUserLoggedIn &&
+							userCartContext.cartItems.length > 0 &&
+							cartProducts.map((product, key) => {
+								{
+									return (
+										<div key={key}>
+											<div className="flex items-center justify-evenly hover:bg-gray-100 -mx-8 px-6 py-5">
+												<div className="flex w-2/5">
+													<div className="w-20">
+														<img
+															className="h-24"
+															src={product.imgUrl}
+															alt={product.name}
+														/>
+													</div>
+													<div className="flex flex-col justify-evenly ml-4 flex-grow">
+														<span className="font-bold text-sm">
+															{product.name}
+														</span>
+														<Link
+															to="/cartItem"
+															className="font-semibold hover:text-red-500 text-gray-500 text-xs"
+														>
+															Remove
+														</Link>
+													</div>
 												</div>
-												<div className="flex flex-col justify-evenly ml-4 flex-grow">
-													<span className="font-bold text-sm">
-														{product.name}
-													</span>
-													<Link
-														to="/cartItem"
-														className="font-semibold hover:text-red-500 text-gray-500 text-xs"
+												<div className="flex justify-center w-1/5">
+													<svg
+														// onClick={userCartContext.updateInCart(
+														// 	product.itemId,
+														// 	product.qty - 1
+														// )}
+														className="fill-current cursor-pointer text-gray-600 w-3"
+														viewBox="0 0 448 512"
 													>
-														Remove
-													</Link>
+														<path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
+													</svg>
+
+													<input
+														className="mx-2 border text-center w-8"
+														type="text"
+														value="1"
+													/>
+
+													<svg
+														// onClick={userCartContext.updateInCart(
+														// 	product.itemId,
+														// 	product.qty + 1
+														// )}
+														className="fill-current cursor-pointer text-gray-600 w-3"
+														viewBox="0 0 448 512"
+													>
+														<path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
+													</svg>
 												</div>
+												<span className="text-center w-1/5 font-semibold text-sm">
+													Rs {product.price}
+												</span>
+												<span className="text-center w-1/5 font-semibold text-sm">
+													Rs {product.price * product.qty}
+												</span>
 											</div>
-											<div className="flex justify-center w-1/5">
-												<svg
-													// onClick={userCartContext.updateInCart(
-													// 	product.itemId,
-													// 	product.qty - 1
-													// )}
-													className="fill-current cursor-pointer text-gray-600 w-3"
-													viewBox="0 0 448 512"
-												>
-													<path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
-												</svg>
-
-												<input
-													className="mx-2 border text-center w-8"
-													type="text"
-													value="1"
-												/>
-
-												<svg
-													// onClick={userCartContext.updateInCart(
-													// 	product.itemId,
-													// 	product.qty + 1
-													// )}
-													className="fill-current cursor-pointer text-gray-600 w-3"
-													viewBox="0 0 448 512"
-												>
-													<path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
-												</svg>
-											</div>
-											<span className="text-center w-1/5 font-semibold text-sm">
-												Rs {product.price}
-											</span>
-											<span className="text-center w-1/5 font-semibold text-sm">
-												Rs {product.price * product.qty}
-											</span>
 										</div>
-									</div>
-								);
-							}
-						})}
+									);
+								}
+							})}
 						<Link
 							to="/"
 							className="flex font-semibold text-end text-indigo-600 text-sm mt-10"
@@ -149,9 +162,8 @@ const cart = () => {
 								<span>Rs. {price + 70}</span>
 							</div>
 							<button
-								onClick={() =>
-									userCartContext.placeOrder(userCartContext.cartItems)
-								}
+								disabled={items == 0}
+								onClick={orderItems}
 								className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full"
 							>
 								Checkout

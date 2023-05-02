@@ -15,7 +15,7 @@ const sidebar = () => {
 	const toggleMenu = () => {
 		setShowMenu(!showMenu);
 	};
-
+	const totalItems = JSON.parse(localStorage.getItem("totalItems"));
 	const toggleSidebar = () => {
 		setShowSidebar(!showSideBar);
 	};
@@ -23,6 +23,10 @@ const sidebar = () => {
 	const logout = async () => {
 		try {
 			if (Auth.currentUser) {
+				localStorage.removeItem("totalPrice");
+				localStorage.removeItem("totalItems");
+				userStatus.setTotalItems(0);
+				userStatus.setTotalPrice(0);
 				await signOut();
 				alert("User Logged out successfully!");
 				navigate("/signin");
@@ -103,20 +107,22 @@ const sidebar = () => {
 										} my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
 									id="dropdown-user`}
 									>
-										<div className="px-4 py-3" role="none">
-											<p
-												className="text-sm text-gray-900 dark:text-white"
-												role="none"
-											>
-												{userStatus.userData.name}
-											</p>
-											<p
-												className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
-												role="none"
-											>
-												{userStatus.userData.email}
-											</p>
-										</div>
+										{userStatus.isUserLoggedIn && (
+											<div className="px-4 py-3" role="none">
+												<p
+													className="text-sm text-gray-900 dark:text-white"
+													role="none"
+												>
+													{userStatus.userData.name}
+												</p>
+												<p
+													className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+													role="none"
+												>
+													{userStatus.userData.email}
+												</p>
+											</div>
+										)}
 										<ul className="py-1" role="none">
 											{userStatus.userData.isAdmin && (
 												<li onClick={toggleMenu}>
@@ -128,7 +134,7 @@ const sidebar = () => {
 															>
 																Dashboard
 															</span>
-															<span className="inline-flex mt-1 items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
+															<span className="inline-flex mt-2 mr-4 items-center justify-center w-4 h-4 p-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
 																0
 															</span>
 														</div>
@@ -146,7 +152,7 @@ const sidebar = () => {
 																Cart
 															</span>
 															<span className="inline-flex mt-2 mr-4 items-center justify-center w-4 h-4 p-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-																{userStatus.totalItems}
+																{totalItems}
 															</span>
 														</div>
 													</Link>
@@ -237,7 +243,7 @@ const sidebar = () => {
 										Cart
 									</span>
 									<span className="inline-flex items-center justify-center w-3 h-3 p-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-										{userStatus.totalItems}
+										{totalItems}
 									</span>
 								</Link>
 							</li>

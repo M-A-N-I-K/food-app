@@ -1,6 +1,22 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import SideBarContext from "../../context/sideBarContext";
 
 const dashboard = () => {
+	const navigate = useNavigate();
+	const [totalOrders, setTotalOrders] = useState(0);
+
+	const [userIds, setUserIds] = useState([]);
+	const adminDashboardContext = useContext(SideBarContext);
+
+	useEffect(() => {
+		setTotalOrders(Object.keys(adminDashboardContext.orders).length);
+		// console.log(adminDashboardContext.orderId);
+		// adminDashboardContext.orderId.map((id) => {
+		// 	console.log(id.slice[5]);
+		// });
+	}, []);
+
 	return (
 		<div className="w-[100vw] h-[80vh] flex flex-col justify-center mt-10">
 			<div className="w-[80vw] h-[70vh] place-self-center overflow-y-auto shadow-md sm:rounded-lg">
@@ -23,9 +39,9 @@ const dashboard = () => {
 								xmlns="http://www.w3.org/2000/svg"
 							>
 								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
 									d="M19 9l-7 7-7-7"
 								></path>
 							</svg>
@@ -73,7 +89,7 @@ const dashboard = () => {
 							</div>
 						</div>
 					</div>
-					<label for="table-search" className="sr-only">
+					<label htmlFor="table-search" className="sr-only">
 						Search
 					</label>
 					<div className="relative">
@@ -88,7 +104,7 @@ const dashboard = () => {
 								<path
 									fillRule="evenodd"
 									d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-									clipeRule="evenodd"
+									clipRule="evenodd"
 								></path>
 							</svg>
 						</div>
@@ -107,7 +123,7 @@ const dashboard = () => {
 								Name
 							</th>
 							<th scope="col" className="px-6 py-3">
-								Position
+								Cart Items
 							</th>
 							<th scope="col" className="px-6 py-3">
 								Status
@@ -118,181 +134,52 @@ const dashboard = () => {
 						</tr>
 					</thead>
 					<tbody>
-						<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-							<th
-								scope="row"
-								className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-							>
-								<img
-									className="w-[60px] h-[40px] rounded-full"
-									src="https://img2link.com/images/2023/05/02/6dfbe451b71356bb8d6e3d357798d2cd.png"
-									alt="Jese image"
-								/>
-								<div className="pl-3">
-									<div className="text-base font-semibold">
-										Neil Sims
-									</div>
-									<div className="font-normal text-gray-500">
-										neil.sims@flowbite.com
-									</div>
-								</div>
-							</th>
-							<td className="px-6 py-4">React Developer</td>
-							<td className="px-6 py-4">
-								<div className="flex items-center">
-									<div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>{" "}
-									Online
-								</div>
-							</td>
-							<td className="px-6 py-4">
-								<a
-									href="#"
-									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-								>
-									Edit user
-								</a>
-							</td>
-						</tr>
-						<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-							<th
-								scope="row"
-								className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-							>
-								<img
-									className="w-[60px] h-[40px] rounded-full"
-									src="https://img2link.com/images/2023/05/02/6dfbe451b71356bb8d6e3d357798d2cd.png"
-									alt="Jese image"
-								/>
-								<div className="pl-3">
-									<div className="text-base font-semibold">
-										Bonnie Green
-									</div>
-									<div className="font-normal text-gray-500">
-										bonnie@flowbite.com
-									</div>
-								</div>
-							</th>
-							<td className="px-6 py-4">Designer</td>
-							<td className="px-6 py-4">
-								<div className="flex items-center">
-									<div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>{" "}
-									Online
-								</div>
-							</td>
-							<td className="px-6 py-4">
-								<a
-									href="#"
-									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-								>
-									Edit user
-								</a>
-							</td>
-						</tr>
-						<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-							<th
-								scope="row"
-								className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-							>
-								<img
-									className="w-[60px] h-[40px] rounded-full"
-									src="https://img2link.com/images/2023/05/02/6dfbe451b71356bb8d6e3d357798d2cd.png"
-									alt="Jese image"
-								/>
-								<div className="pl-3">
-									<div className="text-base font-semibold">
-										Jese Leos
-									</div>
-									<div className="font-normal text-gray-500">
-										jese@flowbite.com
-									</div>
-								</div>
-							</th>
-							<td className="px-6 py-4">Vue JS Developer</td>
-							<td className="px-6 py-4">
-								<div className="flex items-center">
-									<div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>{" "}
-									Online
-								</div>
-							</td>
-							<td className="px-6 py-4">
-								<a
-									href="#"
-									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-								>
-									Edit user
-								</a>
-							</td>
-						</tr>
-						<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-							<th
-								scope="row"
-								className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-							>
-								<img
-									className="w-[60px] h-[40px] rounded-full"
-									src="https://img2link.com/images/2023/05/02/6dfbe451b71356bb8d6e3d357798d2cd.png"
-									alt="Jese image"
-								/>
-								<div className="pl-3">
-									<div className="text-base font-semibold">
-										Thomas Lean
-									</div>
-									<div className="font-normal text-gray-500">
-										thomes@flowbite.com
-									</div>
-								</div>
-							</th>
-							<td className="px-6 py-4">UI/UX Engineer</td>
-							<td className="px-6 py-4">
-								<div className="flex items-center">
-									<div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>{" "}
-									Online
-								</div>
-							</td>
-							<td className="px-6 py-4">
-								<a
-									href="#"
-									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-								>
-									Edit user
-								</a>
-							</td>
-						</tr>
-						<tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-							<th
-								scope="row"
-								className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-							>
-								<img
-									className="w-[60px] h-[40px] rounded-full"
-									src="https://img2link.com/images/2023/05/02/6dfbe451b71356bb8d6e3d357798d2cd.png"
-									alt="Jese image"
-								/>
-								<div className="pl-3">
-									<div className="text-base font-semibold">
-										Leslie Livingston
-									</div>
-									<div className="font-normal text-gray-500">
-										leslie@flowbite.com
-									</div>
-								</div>
-							</th>
-							<td className="px-6 py-4">SEO Specialist</td>
-							<td className="px-6 py-4">
-								<div className="flex items-center">
-									<div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>{" "}
-									Offline
-								</div>
-							</td>
-							<td className="px-6 py-4">
-								<a
-									href="#"
-									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-								>
-									Edit user
-								</a>
-							</td>
-						</tr>
+						{Object.values(adminDashboardContext.orders).map(
+							(order, key) => {
+								{
+									return (
+										<tr
+											className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+											key={key}
+										>
+											<th
+												scope="row"
+												className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+											>
+												<img
+													className="w-[70px] h-[40px] rounded-full"
+													src="https://img2link.com/images/2023/05/02/6dfbe451b71356bb8d6e3d357798d2cd.png"
+													alt="Jese image"
+												/>
+												<div className="pl-3">
+													<div className="text-base font-semibold">
+														Neil Sims
+													</div>
+													<div className="font-normal text-gray-500">
+														neil.sims@flowbite.com
+													</div>
+												</div>
+											</th>
+											<td className="px-6 py-4">13</td>
+											<td className="px-6 py-4">
+												<div className="flex items-center">
+													<div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>{" "}
+													Pending
+												</div>
+											</td>
+											<td className="px-6 py-4">
+												<Link
+													to="/orders"
+													className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+												>
+													Resolve Order
+												</Link>
+											</td>
+										</tr>
+									);
+								}
+							}
+						)}
 					</tbody>
 				</table>
 			</div>

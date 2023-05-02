@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { db, Auth } from "../../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import SideBarContext from "../../context/sideBarContext";
 
 const addFoodItems = () => {
 	const [name, setName] = useState("");
@@ -13,6 +14,7 @@ const addFoodItems = () => {
 	const [image, setImage] = useState(null);
 	const [imgUrl, setImgUrl] = useState("");
 	const foodItemsCollectionRef = collection(db, "food-items");
+	const addFoodItemContext = useContext(SideBarContext);
 
 	const uploadImage = async () => {
 		if (image == null) {
@@ -38,15 +40,17 @@ const addFoodItems = () => {
 			await addDoc(foodItemsCollectionRef, {
 				description: description,
 				name: name,
-				price: price,
+				price: parseInt(price),
 				imgUrl: imgUrl,
 				userId: Auth?.currentUser?.uid,
 			});
+			console.log(price);
 			setName("");
 			setDescription("");
 			setPrice(0);
 			setImage(null);
 			setImgUrl("");
+			addFoodItemContext.setIsNewItemAdded(true);
 		} catch (err) {
 			console.log(err);
 		}
@@ -104,6 +108,7 @@ const addFoodItems = () => {
 							type="number"
 							name="price"
 							id="price"
+							min={1}
 							onChange={(e) => setPrice(e.target.value)}
 							placeholder="100"
 							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"

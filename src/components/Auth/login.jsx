@@ -14,6 +14,15 @@ const login = () => {
 		try {
 			await signInWithEmailAndPassword(Auth, email, password);
 			userStatus.setisUserLoggedIn(true);
+			if (userStatus.isNewItemAdded) {
+				alert("New Items Added!");
+				userStatus.setIsNewItemAdded(false);
+			}
+			if (userStatus.isOrderPlaced) {
+				alert("New Order Recieved");
+				userStatus.setIsOrderPlaced(false);
+			}
+			alert("User Logged In Successfully!");
 			navigate("/");
 		} catch (err) {
 			console.error(err);

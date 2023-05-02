@@ -15,6 +15,7 @@ const Cart = lazy(() => import("./components/User/cart"));
 const AddFoodItems = lazy(() => import("./components/Admin/addFoodItems"));
 const ForgetPassword = lazy(() => import("./components/Auth/forgetPassword"));
 const Dashboard = lazy(() => import("./components/Admin/dashboard"));
+const Orders = lazy(() => import("./components/Admin/orders"));
 
 function App() {
 	return (
@@ -57,6 +58,7 @@ function App() {
 										</PrivateRoute>
 									}
 								/>
+								<Route path="/orders" element={<Orders />} />
 							</Routes>
 						</BrowserRouter>
 					</Suspense>

@@ -27,7 +27,6 @@ const signin = () => {
 				email,
 				password
 			);
-			console.log(res);
 			const user = res.user;
 			await addDoc(collection(db, "users"), {
 				uid: user.uid,
