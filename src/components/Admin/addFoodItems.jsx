@@ -101,7 +101,7 @@ const addFoodItems = () => {
 							Price (In Rs)
 						</label>
 						<input
-							type="text"
+							type="number"
 							name="price"
 							id="price"
 							onChange={(e) => setPrice(e.target.value)}

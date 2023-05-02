@@ -24,12 +24,16 @@ import {
 
 const sideBarState = (props) => {
 	const value = localStorage.getItem("isUserLoggedIn");
+	const itemsVal = JSON.parse(localStorage.getItem("totalItems"));
+	const priceVal = JSON.parse(localStorage.getItem("totalPrice"));
 	const [isUserLoggedIn, setisUserLoggedIn] = useState(value);
 	const [foodItem, setFoodItem] = useState([]);
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [userData, setUserData] = useState([]);
 	const [isUpdated, setIsUpdated] = useState(false);
 	const [cartItems, setCartItems] = useState([]);
+	const [totalItems, setTotalItems] = useState(itemsVal);
+	const [totalPrice, setTotalPrice] = useState(priceVal);
 	const foodItemsCollectionRef = collection(db, "food-items");
 	const history = createBrowserHistory();
 
@@ -78,6 +82,8 @@ const sideBarState = (props) => {
 					realtimeDb,
 					`food-app-static/cart${user.uid}`
 				);
+				setTotalItems(totalItems + 1);
+				setTotalPrice(totalPrice + product.price);
 				push(pushReference, item);
 				alert("Item added to cart");
 			} else {
@@ -107,7 +113,8 @@ const sideBarState = (props) => {
 						newItems.push(newItem);
 					});
 				});
-				setCartItems(newItems);
+				[...new Set(newItems)];
+				setCartItems(...cartItems, newItems);
 			} else {
 				console.log("User is not signed in");
 			}
@@ -126,7 +133,27 @@ const sideBarState = (props) => {
 			}
 		});
 	};
+
+	const placeOrder = (cart) => {
+		onAuthStateChanged(Auth, async (user) => {
+			if (user) {
+				const pushReference = ref(
+					realtimeDb,
+					`food-app-static/orders${user.uid}`
+				);
+				set(pushReference, cart);
+				alert("Order Placed Successfully!");
+			} else {
+				console.log("User is not signed in");
+			}
+		});
+	};
+
 	useEffect(() => {}, [cartItems]);
+	useEffect(() => {
+		localStorage.setItem("totalPrice", totalPrice);
+		localStorage.setItem("totalItems", totalItems);
+	}, [totalPrice]);
 	useEffect(() => {
 		localStorage.setItem("isUserLoggedIn", isUserLoggedIn);
 		history.push(`?isUserLoggedIn=${isUserLoggedIn}`);
@@ -151,8 +178,13 @@ const sideBarState = (props) => {
 				setIsUpdated,
 				addToCart,
 				cartItems,
-				updateInCart,
 				setCartItems,
+				updateInCart,
+				placeOrder,
+				totalItems,
+				totalPrice,
+				setTotalItems,
+				setTotalPrice,
 			}}
 		>
 			{props.children}

@@ -4,8 +4,16 @@ import SideBarContext from "../../context/sideBarContext";
 const cart = () => {
 	const navigate = useNavigate();
 	const userCartContext = useContext(SideBarContext);
-	var total = 0;
-	var totalItems = 0;
+	let price = 0;
+	let items = 0;
+
+	useEffect(() => {
+		userCartContext.setTotalItems(items);
+		userCartContext.setTotalPrice(price);
+	}, [price]);
+	useEffect(() => {
+		userCartContext.setCartItems(userCartContext.cartItems);
+	}, [userCartContext.cartItems]);
 	return (
 		<>
 			<div className="w-[90vw] mx-auto mt-20">
@@ -14,12 +22,12 @@ const cart = () => {
 						<div className="flex justify-between border-b pb-8">
 							<h1 className="font-semibold text-2xl">Shopping Cart</h1>
 						</div>
-						{userCartContext.cartItems.map((product) => {
+						{userCartContext.cartItems.map((product, key) => {
 							{
-								total += parseInt(product.price);
-								totalItems += product.qty;
+								price = price + product.price;
+								items = items + 1;
 								return (
-									<div>
+									<div key={key}>
 										<div className="flex items-center justify-evenly hover:bg-gray-100 -mx-8 px-6 py-5">
 											<div className="flex w-2/5">
 												<div className="w-20">
@@ -101,14 +109,14 @@ const cart = () => {
 							<h1 className="font-semibold text-2xl border-b pb-8">
 								Order Summary
 							</h1>
-							<h2 className="font-semibold text-2xl">{totalItems}</h2>
+							<h2 className="font-semibold text-2xl">{items}</h2>
 						</div>
 
 						<div className="flex justify-between mt-10 mb-5">
 							<span className="font-semibold text-sm uppercase">
-								Items {totalItems}
+								Items {items}
 							</span>
-							<span className="font-semibold text-sm">{total}</span>
+							<span className="font-semibold text-sm">{price}</span>
 						</div>
 						<div>
 							<label className="font-medium inline-block mb-3 text-sm uppercase">
@@ -120,7 +128,7 @@ const cart = () => {
 						</div>
 						<div className="py-10">
 							<label
-								for="promo"
+								htmlFor="promo"
 								className="font-semibold inline-block mb-3 text-sm uppercase"
 							>
 								Promo Code
@@ -138,9 +146,14 @@ const cart = () => {
 						<div className="border-t mt-8">
 							<div className="flex font-semibold justify-between py-6 text-sm uppercase">
 								<span>Total cost</span>
-								<span>Rs. {total + 70}</span>
+								<span>Rs. {price + 70}</span>
 							</div>
-							<button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
+							<button
+								onClick={() =>
+									userCartContext.placeOrder(userCartContext.cartItems)
+								}
+								className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full"
+							>
 								Checkout
 							</button>
 						</div>

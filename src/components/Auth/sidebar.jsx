@@ -146,7 +146,7 @@ const sidebar = () => {
 																Cart
 															</span>
 															<span className="inline-flex mt-2 mr-4 items-center justify-center w-4 h-4 p-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-																0
+																{userStatus.totalItems}
 															</span>
 														</div>
 													</Link>
@@ -237,7 +237,7 @@ const sidebar = () => {
 										Cart
 									</span>
 									<span className="inline-flex items-center justify-center w-3 h-3 p-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-										0
+										{userStatus.totalItems}
 									</span>
 								</Link>
 							</li>
