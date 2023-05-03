@@ -25,6 +25,7 @@ const sidebar = () => {
 			if (Auth.currentUser) {
 				localStorage.removeItem("totalPrice");
 				localStorage.removeItem("totalItems");
+				localStorage.removeItem("storedCartItems");
 				userStatus.setTotalItems(0);
 				userStatus.setTotalPrice(0);
 				await signOut();

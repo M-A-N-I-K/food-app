@@ -4,17 +4,18 @@ import SideBarContext from "../../context/sideBarContext";
 const cart = () => {
 	const navigate = useNavigate();
 	const userCartContext = useContext(SideBarContext);
+	let totalItems = JSON.parse(localStorage.getItem("totalItems"));
+	let totaPrice = JSON.parse(localStorage.getItem("totalPrice"));
 	let items = 0;
 	let price = 0;
+	const cartProducts = JSON.parse(localStorage.getItem("storedCartItems"));
 
 	const orderItems = () => {
-		userCartContext.removeCartItems(userCartContext.cartItems);
-		localStorage.setItem("totalItems", 0);
-		localStorage.setItem("totalPrice", 0);
+		userCartContext.removeCartItems(cartProducts);
+		localStorage.setItem("totalItems", JSON.stringify(0));
+		localStorage.setItem("totalPrice", JSON.stringify(0));
+		localStorage.setItem("storedCartItems", JSON.stringify([]));
 		navigate("/");
-		// userCartContext.sendUserInfo()
-		userCartContext.setTotalItems(items);
-		userCartContext.setTotalPrice(price);
 	};
 
 	return (
@@ -26,8 +27,8 @@ const cart = () => {
 							<h1 className="font-semibold text-2xl">Shopping Cart</h1>
 						</div>
 						{userCartContext.isUserLoggedIn &&
-							userCartContext.cartItems.length > 0 &&
-							userCartContext.cartItems.map((product, key) => {
+							cartProducts.length > 0 &&
+							cartProducts.map((product, key) => {
 								{
 									items = items + product.qty;
 									price = price + product.price * product.qty;
@@ -70,11 +71,10 @@ const cart = () => {
 														<path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
 													</svg>
 
-													<input
-														className="mx-2 border text-center w-8"
-														type="text"
-														value={product.qty}
-													/>
+													<span className="mx-2 border text-center w-8">
+														{product.qty}
+													</span>
+													<span />
 
 													<svg
 														onClick={() => {
@@ -103,8 +103,6 @@ const cart = () => {
 									);
 								}
 							})}
-						{localStorage.setItem("totalItems", items.toString())}
-						{localStorage.setItem("totalPrice", price.toString())}
 						<Link
 							to="/"
 							className="flex font-semibold text-end text-indigo-600 text-sm mt-10"
@@ -125,14 +123,14 @@ const cart = () => {
 							<h1 className="font-semibold text-2xl border-b pb-8">
 								Order Summary
 							</h1>
-							<h2 className="font-semibold text-2xl">{items}</h2>
+							<h2 className="font-semibold text-2xl">{totalItems}</h2>
 						</div>
 
 						<div className="flex justify-between mt-10 mb-5">
 							<span className="font-semibold text-sm uppercase">
-								Items {items}
+								Items {totalItems}
 							</span>
-							<span className="font-semibold text-sm">{price}</span>
+							<span className="font-semibold text-sm">{totaPrice}</span>
 						</div>
 						<div>
 							<label className="font-medium inline-block mb-3 text-sm uppercase">
@@ -162,7 +160,7 @@ const cart = () => {
 						<div className="border-t mt-8">
 							<div className="flex font-semibold justify-between py-6 text-sm uppercase">
 								<span>Total cost</span>
-								<span>Rs. {price + 70}</span>
+								<span>Rs. {totaPrice + 70}</span>
 							</div>
 							<button
 								disabled={items == 0}

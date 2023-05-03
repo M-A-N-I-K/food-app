@@ -14,11 +14,11 @@ const login = () => {
 		try {
 			await signInWithEmailAndPassword(Auth, email, password);
 			userStatus.setisUserLoggedIn(true);
-			if (userStatus.isNewItemAdded) {
+			if (userStatus.isNewItemAdded && !userStatus.userData.isAdmin) {
 				alert("New Items Added!");
 				userStatus.setIsNewItemAdded(false);
 			}
-			if (userStatus.isOrderPlaced) {
+			if (userStatus.isOrderPlaced && userStatus.userData.isAdmin) {
 				alert("New Order Recieved");
 				userStatus.setIsOrderPlaced(false);
 			}
