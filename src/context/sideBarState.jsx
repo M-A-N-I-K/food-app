@@ -12,7 +12,15 @@ import {
 	setDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { onValue, ref, set, push, remove } from "firebase/database";
+import {
+	onValue,
+	ref,
+	set,
+	push,
+	remove,
+	child,
+	update,
+} from "firebase/database";
 
 const sideBarState = (props) => {
 	const value = localStorage.getItem("isUserLoggedIn");
@@ -90,7 +98,7 @@ const sideBarState = (props) => {
 					price: product.price,
 					imgUrl: product.imgUrl,
 					qty: 1,
-					itemId: product.userId,
+					itemId: product.itemId,
 				};
 
 				const pushReference = ref(
@@ -99,11 +107,6 @@ const sideBarState = (props) => {
 				);
 				setTotalItems(totalItems + 1);
 				setTotalPrice(totalPrice + product.price);
-				localStorage.setItem(
-					"totalPrice",
-					JSON.stringify(totalPrice + product.price)
-				);
-				localStorage.setItem("totalItems", JSON.stringify(totalItems + 1));
 				push(pushReference, item);
 				alert("Item added to cart");
 			} else {
@@ -171,6 +174,17 @@ const sideBarState = (props) => {
 					realtimeDb,
 					`food-app-static/cart${user.uid}`
 				);
+				onValue(reference, (snapshot) => {
+					snapshot.forEach((childSnapshot) => {
+						console.log(childSnapshot.val().qty);
+						if (childSnapshot.val().itemId === itemId) {
+							const itemRef = childSnapshot.ref;
+							const updates = {};
+							updates["qty"] = newQty;
+							update(itemRef, updates);
+						}
+					});
+				});
 			} else {
 				console.log("User is not signed in");
 			}
@@ -190,6 +204,7 @@ const sideBarState = (props) => {
 			}
 		});
 	};
+	useEffect(() => {}, [cartItems]);
 
 	useEffect(() => {
 		localStorage.setItem("isUserLoggedIn", isUserLoggedIn);
@@ -197,6 +212,8 @@ const sideBarState = (props) => {
 		getUserData();
 		displayCart();
 		displayOrder();
+		localStorage.setItem("totalPrice", JSON.stringify(totalPrice));
+		localStorage.setItem("totalItems", JSON.stringify(totalItems));
 	}, [isUserLoggedIn]);
 
 	const removeFromCart = async (product) => {};

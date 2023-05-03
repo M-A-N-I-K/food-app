@@ -4,18 +4,8 @@ import SideBarContext from "../../context/sideBarContext";
 const cart = () => {
 	const navigate = useNavigate();
 	const userCartContext = useContext(SideBarContext);
-	const items = JSON.parse(localStorage.getItem("totalItems"));
-	const price = JSON.parse(localStorage.getItem("totalPrice"));
-	useEffect(() => {
-		userCartContext.setTotalItems(items);
-		userCartContext.setTotalPrice(price);
-	}, [items]);
-	localStorage.setItem(
-		"cartProducts",
-		JSON.stringify(userCartContext.cartItems)
-	);
-
-	console.log(userCartContext.cartItems);
+	let items = 0;
+	let price = 0;
 
 	const orderItems = () => {
 		userCartContext.removeCartItems(userCartContext.cartItems);
@@ -23,10 +13,10 @@ const cart = () => {
 		localStorage.setItem("totalPrice", 0);
 		navigate("/");
 		// userCartContext.sendUserInfo()
+		userCartContext.setTotalItems(items);
+		userCartContext.setTotalPrice(price);
 	};
 
-	const cartProducts = JSON.parse(localStorage.getItem("cartProducts"));
-	console.log(cartProducts);
 	return (
 		<>
 			<div className="w-[90vw] mx-auto mt-20">
@@ -37,8 +27,10 @@ const cart = () => {
 						</div>
 						{userCartContext.isUserLoggedIn &&
 							userCartContext.cartItems.length > 0 &&
-							cartProducts.map((product, key) => {
+							userCartContext.cartItems.map((product, key) => {
 								{
+									items = items + product.qty;
+									price = price + product.price * product.qty;
 									return (
 										<div key={key}>
 											<div className="flex items-center justify-evenly hover:bg-gray-100 -mx-8 px-6 py-5">
@@ -55,7 +47,7 @@ const cart = () => {
 															{product.name}
 														</span>
 														<Link
-															to="/cartItem"
+															to="/cart"
 															className="font-semibold hover:text-red-500 text-gray-500 text-xs"
 														>
 															Remove
@@ -64,10 +56,14 @@ const cart = () => {
 												</div>
 												<div className="flex justify-center w-1/5">
 													<svg
-														// onClick={userCartContext.updateInCart(
-														// 	product.itemId,
-														// 	product.qty - 1
-														// )}
+														onClick={() => {
+															userCartContext.updateInCart(
+																product.itemId,
+																product.qty - 1
+															);
+															items = items - 1;
+															price = product.price - price;
+														}}
 														className="fill-current cursor-pointer text-gray-600 w-3"
 														viewBox="0 0 448 512"
 													>
@@ -77,14 +73,19 @@ const cart = () => {
 													<input
 														className="mx-2 border text-center w-8"
 														type="text"
-														value="1"
+														value={product.qty}
 													/>
 
 													<svg
-														// onClick={userCartContext.updateInCart(
-														// 	product.itemId,
-														// 	product.qty + 1
-														// )}
+														onClick={() => {
+															userCartContext.updateInCart(
+																product.itemId,
+																product.qty + 1
+															);
+
+															items = items + 1;
+															price = product.price + price;
+														}}
 														className="fill-current cursor-pointer text-gray-600 w-3"
 														viewBox="0 0 448 512"
 													>
@@ -102,6 +103,8 @@ const cart = () => {
 									);
 								}
 							})}
+						{localStorage.setItem("totalItems", items.toString())}
+						{localStorage.setItem("totalPrice", price.toString())}
 						<Link
 							to="/"
 							className="flex font-semibold text-end text-indigo-600 text-sm mt-10"

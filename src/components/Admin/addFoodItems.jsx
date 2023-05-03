@@ -42,7 +42,7 @@ const addFoodItems = () => {
 				name: name,
 				price: parseInt(price),
 				imgUrl: imgUrl,
-				userId: Auth?.currentUser?.uid,
+				itemId: v4(),
 			});
 			console.log(price);
 			setName("");
